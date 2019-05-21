@@ -1,0 +1,3 @@
+[submodule "app/bleadv"]
+	path = app/bleadv
+	url = git@github.com:eblot/tde-nrf52-bleadv.git
