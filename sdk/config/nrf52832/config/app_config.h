@@ -18,6 +18,7 @@
 #define TWI_ENABLED                                   1
 #define TWI1_ENABLED                                  1
 #define TWI1_USE_EASY_DMA                             0
+#define TWI_DEFAULT_CONFIG_CLR_BUS_INIT               1
 
 // UART
 //  UART configuration is another nRF mess, fasten your seatbelt.

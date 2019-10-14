@@ -8,13 +8,13 @@
 SET (subprojects
      app_scheduler
      app_timer
-     app_usbd
      atomic
      atomic_fifo
      atomic_flags
      hardfault
      section_vars
      strerror
+     usbd
      util
      utf)
 

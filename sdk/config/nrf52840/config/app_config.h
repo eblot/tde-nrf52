@@ -58,7 +58,8 @@
 
 // USB
 #ifdef HAVE_USB
- #define USBD_ENABLED                                 1
+ #define NRFX_USBD_ENABLED                            1
+// #define USBD_ENABLED                                 1
  #define APP_USBD_CONFIG_EVENT_QUEUE_ENABLE           1
  #define APP_USBD_ENABLED                             1
  #define APP_USBD_CDC_ACM_ENABLED                     1

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 - 2018, Nordic Semiconductor ASA
+ * Copyright (c) 2015 - 2019, Nordic Semiconductor ASA
  *
  * All rights reserved.
  *
@@ -237,18 +237,18 @@ static ret_code_t set_adv_mode_directed(ble_advertising_t * const p_advertising,
                                         ble_gap_adv_params_t    * p_adv_params)
 {
     p_advertising->adv_evt = BLE_ADV_EVT_DIRECTED;
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     if (p_advertising->adv_modes_config.ble_adv_extended_enabled)
     {
         p_adv_params->properties.type = BLE_GAP_ADV_TYPE_EXTENDED_CONNECTABLE_NONSCANNABLE_DIRECTED;
     }
     else
     {
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
         p_adv_params->properties.type = BLE_GAP_ADV_TYPE_CONNECTABLE_NONSCANNABLE_DIRECTED;
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     }
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
     p_adv_params->duration = p_advertising->adv_modes_config.ble_adv_directed_timeout;
 
     p_advertising->p_adv_data = NULL;
@@ -311,18 +311,18 @@ static ret_code_t set_adv_mode_fast(ble_advertising_t * const p_advertising,
     p_adv_params->interval = p_advertising->adv_modes_config.ble_adv_fast_interval;
     p_adv_params->duration = p_advertising->adv_modes_config.ble_adv_fast_timeout;
 
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     if (p_advertising->adv_modes_config.ble_adv_extended_enabled)
     {
         p_advertising->adv_params.properties.type = BLE_GAP_ADV_TYPE_EXTENDED_CONNECTABLE_NONSCANNABLE_UNDIRECTED;
     }
     else
     {
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
         p_advertising->adv_params.properties.type = BLE_GAP_ADV_TYPE_CONNECTABLE_SCANNABLE_UNDIRECTED;
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     }
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
  
     if (use_whitelist(p_advertising))
     {
@@ -358,18 +358,18 @@ static ret_code_t set_adv_mode_slow(ble_advertising_t * const p_advertising,
     p_adv_params->interval = p_advertising->adv_modes_config.ble_adv_slow_interval;
     p_adv_params->duration = p_advertising->adv_modes_config.ble_adv_slow_timeout;
 
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     if (p_advertising->adv_modes_config.ble_adv_extended_enabled)
     {
         p_advertising->adv_params.properties.type = BLE_GAP_ADV_TYPE_EXTENDED_CONNECTABLE_NONSCANNABLE_UNDIRECTED;
     }
     else
     {
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
         p_advertising->adv_params.properties.type = BLE_GAP_ADV_TYPE_CONNECTABLE_SCANNABLE_UNDIRECTED;
-#if !defined (S112)
+#if !defined (S112) && !defined(S312)
     }
-#endif // !defined (S112)
+#endif // !defined (S112) && !defined(S312)
 
     if (use_whitelist(p_advertising))
     {
@@ -475,11 +475,20 @@ uint32_t ble_advertising_init(ble_advertising_t            * const p_advertising
     VERIFY_SUCCESS(ret);
 
     p_advertising->adv_data.scan_rsp_data.p_data = p_advertising->enc_scan_rsp_data;
-    p_advertising->adv_data.scan_rsp_data.len    = BLE_GAP_ADV_SET_DATA_SIZE_MAX;
-
-    // If p_init->srdata is all zeros, length is returned as 0.
+    if (p_advertising->adv_modes_config.ble_adv_extended_enabled == true)
+    {
+#ifdef BLE_GAP_ADV_SET_DATA_SIZE_EXTENDED_CONNECTABLE_MAX_SUPPORTED
+        p_advertising->adv_data.scan_rsp_data.len = BLE_GAP_ADV_SET_DATA_SIZE_EXTENDED_CONNECTABLE_MAX_SUPPORTED;
+#else
+        p_advertising->adv_data.scan_rsp_data.len = BLE_GAP_ADV_SET_DATA_SIZE_MAX;
+#endif // BLE_GAP_ADV_SET_DATA_SIZE_EXTENDED_CONNECTABLE_MAX_SUPPORTED
+    }
+    else
+    {
+        p_advertising->adv_data.scan_rsp_data.len = BLE_GAP_ADV_SET_DATA_SIZE_MAX;
+    }
     ret = ble_advdata_encode(&p_init->srdata,
-                             p_advertising->adv_data.scan_rsp_data.p_data,
+                              p_advertising->adv_data.scan_rsp_data.p_data,
                              &p_advertising->adv_data.scan_rsp_data.len);
     VERIFY_SUCCESS(ret);
 

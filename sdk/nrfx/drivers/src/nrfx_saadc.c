@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 - 2018, Nordic Semiconductor ASA
+ * Copyright (c) 2015 - 2019, Nordic Semiconductor ASA
  *
  * All rights reserved.
  *
@@ -237,6 +237,7 @@ nrfx_err_t nrfx_saadc_init(nrfx_saadc_config_t const * p_config,
     nrf_saadc_int_disable(NRF_SAADC_INT_ALL);
     nrf_saadc_event_clear(NRF_SAADC_EVENT_END);
     nrf_saadc_event_clear(NRF_SAADC_EVENT_STARTED);
+    nrf_saadc_event_clear(NRF_SAADC_EVENT_STOPPED);
     NRFX_IRQ_PRIORITY_SET(SAADC_IRQn, p_config->interrupt_priority);
     NRFX_IRQ_ENABLE(SAADC_IRQn);
     nrf_saadc_int_enable(NRF_SAADC_INT_END);

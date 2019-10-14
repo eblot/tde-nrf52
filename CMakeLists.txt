@@ -18,6 +18,14 @@ use_default_xas_settings ()
 # CMake definitions
 #------------------------------------------------------------------------------
 
+# If trace probe mode is enable, force redirection of GPIO as trace probe
+# outputs
+IF (DEFINED TRACE_PROBE)
+  # workaround stupid CMake bugged warning
+  STRING (TOLOWER "${TRACE_PROBE}" _TRACE_PROBE)
+  ADD_DEFINITIONS(-DENABLE_TRACE=1)
+ENDIF ()
+
 # To build nRF52840 projects, HAVE_NRF52840 should be defined to 1
 IF (NOT DEFINED HAVE_NRF52840)
   SET (HAVE_NRF52840 0)
@@ -103,21 +111,19 @@ MACRO (use_nrf52840)
   SET (HAVE_LEGACY 1) # because USB stack is not ported to NRFX...
   ADD_DEFINITIONS(-DHAVE_USB -DHAVE_LEGACY)
   # USB requires the following libraries
-  subdirlist (usbdirs ${CMAKE_SOURCE_DIR}/sdk/libraries/app_usbd
+  subdirlist (usbdirs ${CMAKE_SOURCE_DIR}/sdk/libraries/usbd
               RECURSIVE RELATIVE)
   FOREACH (usbdir ${usbdirs})
-    LIST (APPEND sdkusbdirs libraries/app_usbd/${usbdir})
+    LIST (APPEND sdkusbdirs libraries/usbd/${usbdir})
   ENDFOREACH ()
   use_sdk_headers (
-    drivers/usbd
-    # NordicSemi has not ported its own food to its USB stack with SDK v15.x!
     integration/nrfx/legacy
-    libraries/app_usbd
+    libraries/usbd
     libraries/atomic_fifo
     libraries/utf
     ${sdkusbdirs}
   )
-  LIST (APPEND NRF52_SYSLIBS app_usbd atomic atomic_fifo legacy usbd)
+  LIST (APPEND NRF52_SYSLIBS atomic atomic_fifo legacy usbd)
 ENDMACRO()
 
 #------------------------------------------------------------------------------
@@ -133,9 +139,9 @@ MACRO (use_softdevice sd)
     STRING (TOLOWER ${SOFTDEVICE} softdev)
     SET (NRF52_SD softdevice/${softdev})
     ADD_DEFINITIONS (-D${SOFTDEVICE} -DSOFTDEVICE_PRESENT=1)
-    ADD_DEFINITIONS (-DNRF_SD_BLE_API_VERSION=6)
     INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/sdk/softdevice/sdh)
     INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/sdk/${NRF52_SD}/include)
+    INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/sdk/${NRF52_SD}/include/nrf52)
     use_sdk_headers (
       ble/ble_advertising
       ble/ble_common

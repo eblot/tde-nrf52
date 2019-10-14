@@ -7,7 +7,6 @@
 # define subprojects
 SET (subprojects
      ble
-     drivers
      integration
      libraries
      nrfx

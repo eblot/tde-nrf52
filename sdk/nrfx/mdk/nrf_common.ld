@@ -75,6 +75,13 @@ SECTIONS
         KEEP(*(.eh_frame*))
     } > FLASH
 
+    .got : {
+        *(.got)
+        *(.got.plt)
+        *(.igot)
+        *(.igot.plt)
+    } > FLASH
+
     .ARM.extab :
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)

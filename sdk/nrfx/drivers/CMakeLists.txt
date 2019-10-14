@@ -1,8 +1,13 @@
 #-----------------------------------------------------------------------------
-# ADC driver for nRF52
+# Drivers for nRF52
 #
 # @file CMakeLists.txt
 #-----------------------------------------------------------------------------
+
+IF ( HAVE_USB )
+  LIST (APPEND EXTRA_SRCS
+        src/nrfx_usbd.c)
+ENDIF ()
 
 build_component_from (
   src/nrfx_clock.c
@@ -12,7 +17,6 @@ build_component_from (
   src/nrfx_lpcomp.c
   src/nrfx_pdm.c
   src/nrfx_power.c
-  src/nrfx_power_clock.c
   src/nrfx_ppi.c
   src/nrfx_pwm.c
   src/nrfx_qdec.c
@@ -29,7 +33,7 @@ build_component_from (
   src/nrfx_twi.c
   src/nrfx_twim.c
   src/nrfx_twis.c
-  src/nrfx_uart.c
   src/nrfx_uarte.c
   src/nrfx_wdt.c
+  ${EXTRA_SRCS}
 )
